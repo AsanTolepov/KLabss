@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, FlaskConical, ChevronLeft, Atom, ClipboardList, X } from 'lucide-react';
 
-// Komponentlar (Sizdagi bor fayllar)
+// Komponentlar
 import ElementCard from '../../components/ElementCard';
 import Beaker from '../../components/Beaker';
 import ReactionResultCard from '../../components/ReactionResultCard';
@@ -13,50 +13,74 @@ import { ELEMENTS } from '../../constants';
 import { ElementData, ReactionResult } from '../../types';
 import { analyzeReaction } from '../../services/geminiService';
 
-// --- REAKSIYALAR REFERENCE MA'LUMOTLARI ---
+// --- YANGILANGAN REAKSIYALAR JADVALI (MOLECULE VIEWER ASOSIDA) ---
 const REACTION_REFERENCE = [
-  { equation: "Ag + S -> Ag₂S", name: "Kumush sulfid", type: "Qorayish / Sintez", desc: "Kumush buyumlar havodagi oltingugurt bilan reaksiyaga kirishib, qora rangli kumush sulfid qatlamini hosil qiladi." },
-  { equation: "Al + Cl -> AlCl₃", name: "Alyuminiy xlorid", type: "Ekzotermik Sintez", desc: "Alyuminiy xlor gazi bilan shiddatli reaksiyaga kirishib, oq tutun (Alyuminiy xlorid) hosil qiladi." },
-  { equation: "Al + O -> Al₂O₃", name: "Alyuminiy oksidi", type: "Oksidlanish", desc: "Alyuminiy sirti havoda darhol yupqa va mustahkam oksid qatlami bilan qoplanadi." },
-  { equation: "Au + H -> Reaksiya yo'q", name: "-", type: "Inert", desc: "Oltin (Au) juda passiv metall bo'lib, vodorod bilan reaksiyaga kirishmaydi." },
-  { equation: "Au + O -> Reaksiya yo'q", name: "-", type: "Inert", desc: "Oltin asil metall bo'lgani uchun kislorodda zanglamaydi va oksidlanmaydi." },
-  { equation: "C + H -> CH₄", name: "Metan", type: "Sintez", desc: "Uglerod va vodorod yuqori haroratda birikib, tabiiy gazning asosiy tarkibiy qismi - Metanni hosil qiladi." },
-  { equation: "C + O -> CO₂", name: "Karbonat angidrid", type: "Yonish", desc: "Ko'mir kislorodda yonib, karbonat angidrid gazini hosil qiladi." },
-  { equation: "Ca + O -> CaO", name: "Kalsiy oksidi", type: "Yonish", desc: "Kalsiy havoda yonib, so'ndirilmagan ohak (CaO) hosil qiladi." },
-  { equation: "Cl + H -> HCl", name: "Xlorovodorod", type: "Portlovchi Sintez", desc: "Vodorod va Xlor aralashmasi yorug'lik tushganda portlab, xlorovodorod gazini hosil qiladi." },
-  { equation: "Cl + K -> KCl", name: "Kaliy xlorid", type: "Sintez", desc: "Kaliy xlor gazi bilan juda shiddatli reaksiyaga kirishib, kaliy xlorid tuzini hosil qiladi." },
-  { equation: "Cl + Na -> NaCl", name: "Osh tuzi", type: "Sintez", desc: "Natriy va Xlor birikib, kundalik hayotda ishlatiladigan osh tuzini hosil qiladi." },
-  { equation: "Cu + O -> CuO", name: "Mis(II) oksidi", type: "Oksidlanish", desc: "Qizil mis qizdirilganda qorayib, qora rangli mis oksidi hosil qiladi." },
-  { equation: "Fe + O -> Fe₂O₃", name: "Zang", type: "Korroziya", desc: "Temir kislorod va namlik ta'sirida zanglaydi." },
-  { equation: "Fe + S -> FeS", name: "Temir sulfid", type: "Birikish", desc: "Temir va oltingugurt aralashmasi qizdirilganda 'cho'g'lanib', temir sulfid hosil qiladi." },
-  { equation: "H + He -> Reaksiya yo'q", name: "-", type: "Inert", desc: "Geliy inert gaz, u vodorod bilan birikmaydi." },
-  { equation: "H + N -> NH₃", name: "Ammiak", type: "Sintez (Haber)", desc: "Azot va vodorod yuqori bosimda ammiak hosil qiladi." },
-  { equation: "H + O -> H₂O", name: "Suv", type: "Portlovchi Sintez", desc: "Vodorod va kislorod aralashmasi uchqun ta'sirida portlab suv hosil qiladi." },
-  { equation: "He + O -> Reaksiya yo'q", name: "-", type: "Inert", desc: "Geliy asil gaz bo'lib, kislorod bilan yonmaydi ham, birikmaydi ham." },
-  { equation: "Mg + O -> MgO", name: "Magniy oksidi", type: "Yonish", desc: "Magniy ko'zni qamashtiruvchi oq yorug'lik bilan yonib, oq kukun (Magniy oksidi) hosil qiladi." },
-  { equation: "Ne + O -> Reaksiya yo'q", name: "-", type: "Inert", desc: "Neon inert gazdir." },
-  { equation: "C + H + O -> C₆H₁₂O₆", name: "Glyukoza", type: "Fotosintez", desc: "Uglerod, vodorod va kislorod tirik organizmlarda glyukoza kabi murakkab moddalarni hosil qiladi." },
-  { equation: "H + O + S -> H₂SO₄", name: "Sulfat kislota", type: "Sintez", desc: "Oltingugurt oksidlari suv bilan birikib sulfat kislota hosil qiladi." },
-  { equation: "Al + S -> Al₂S₃", name: "Alyuminiy sulfid", type: "Sintez", desc: "Alyuminiy va oltingugurt yuqori haroratda birikib, alyuminiy sulfidini hosil qiladi." },
-  { equation: "Au + Cl -> AuCl₃", name: "Oltin xlorid", type: "Sintez", desc: "Oltin xlor bilan reaksiyaga kirishib, oltin xloridini hosil qiladi (yuqori haroratda)." },
-  { equation: "C + S -> CS₂", name: "Uglerod disulfid", type: "Sintez", desc: "Uglerod va oltingugurt yuqori haroratda birikib, uglerod disulfidini hosil qiladi." },
-  { equation: "Ca + Cl -> CaCl₂", name: "Kalsiy xlorid", type: "Sintez", desc: "Kalsiy va xlor birikib, kalsiy xlorid tuzini hosil qiladi." },
-  { equation: "Cl + S -> S₂Cl₂", name: "Oltingugurt dixlorid", type: "Sintez", desc: "Xlor va oltingugurt birikib, oltingugurt dixloridini hosil qiladi." },
-  { equation: "Cu + S -> CuS", name: "Mis sulfid", type: "Sintez", desc: "Mis va oltingugurt qizdirilganda mis sulfidini hosil qiladi." },
-  { equation: "Cl + Fe -> FeCl₃", name: "Temir xlorid", type: "Sintez", desc: "Temir va xlor birikib, temir xloridini hosil qiladi." },
-  { equation: "H + S -> H₂S", name: "Vodorod sulfid", type: "Sintez", desc: "Vodorod va oltingugurt birikib, vodorod sulfid gazini (tuxum hidi) hosil qiladi." },
-  { equation: "Cl + Mg -> MgCl₂", name: "Magniy xlorid", type: "Sintez", desc: "Magniy va xlor birikib, magniy xloridini hosil qiladi." },
-  { equation: "N + O -> NO", name: "Azot oksid", type: "Sintez", desc: "Azot va kislorod yuqori haroratda birikib, azot oksidini hosil qiladi." },
-  { equation: "Na + O -> Na₂O", name: "Natriy oksid", type: "Oksidlanish", desc: "Natriy kislorod bilan reaksiyaga kirishib, natriy oksidini hosil qiladi." },
-  { equation: "K + S -> K₂S", name: "Kaliy sulfid", type: "Sintez", desc: "Kaliy va oltingugurt birikib, kaliy sulfidini hosil qiladi." },
-  { equation: "O + Zn -> ZnO", name: "Sink oksid", type: "Yonish", desc: "Sink kislorodda yonib, oq kukunli sink oksidini hosil qiladi." },
-  { equation: "O + S -> SO₂", name: "Oltingugurt dioksid", type: "Yonish", desc: "Oltingugurt kislorodda yonib, oltingugurt dioksid gazini hosil qiladi." },
-  { equation: "O + P -> P₂O₅", name: "Fosfor pentoksid", type: "Yonish", desc: "Fosfor kislorodda shiddatli yonib, fosfor pentoksidini hosil qiladi." },
-  { equation: "C + H + C -> C₂H₂", name: "Asetilen", type: "Org. Sintez", desc: "Uglerod va vodorod birikib, asetilen gazini hosil qiladi." },
-  { equation: "H + N + O -> HNO₃", name: "Azot kislota", type: "Sintez", desc: "Azot oksidlari suv bilan birikib, azot kislotasini hosil qiladi." },
-  { equation: "C + H + O -> H₂CO₃", name: "Karbonat kislota", type: "Sintez", desc: "Karbonat angidrid suv bilan birikib, karbonat kislotasini hosil qiladi." },
-  { equation: "H + O + P -> H₃PO₄", name: "Fosfor kislota", type: "Sintez", desc: "Fosfor oksidlari suv bilan birikib, fosfor kislotasini hosil qiladi." },
-  { equation: "H + N + S -> (NH₄)₂SO₄", name: "Ammonium sulfat", type: "Sintez", desc: "Ammiak va sulfat kislota birikib, ammonium sulfatni hosil qiladi." }
+  { 
+    equation: "H + O -> H₂O", 
+    name: "Suv", 
+    type: "Portlovchi Sintez", 
+    desc: "Vodorod va kislorod aralashmasi uchqun ta'sirida portlab, hayot manbai bo'lgan suvni hosil qiladi." 
+  },
+  { 
+    equation: "Na + Cl -> NaCl", 
+    name: "Osh tuzi", 
+    type: "Sintez", 
+    desc: "Zaharli xlor gazi va faol natriy metali birikib, zararsiz va foydali osh tuzini hosil qiladi." 
+  },
+  { 
+    equation: "C + O -> CO₂", 
+    name: "Karbonat angidrid", 
+    type: "Yonish", 
+    desc: "Uglerod (ko'mir) kislorodda to'liq yonib, rangsiz karbonat angidrid gazini hosil qiladi." 
+  },
+  { 
+    equation: "C + H -> CH₄", 
+    name: "Metan", 
+    type: "Org. Sintez", 
+    desc: "Tabiiy gazning asosiy tarkibiy qismi. Eng oddiy uglevodorod." 
+  },
+  { 
+    equation: "N + H -> NH₃", 
+    name: "Ammiak", 
+    type: "Sintez (Haber)", 
+    desc: "Azot va vodorod yuqori bosim va haroratda birikib, o'tkir hidli ammiak gazini hosil qiladi." 
+  },
+  { 
+    equation: "C + S -> CS₂", 
+    name: "Uglerod disulfid", 
+    type: "Sintez", 
+    desc: "Uglerod va oltingugurt yuqori haroratda reaksiyaga kirishib, zaharli suyuqlik hosil qiladi." 
+  },
+  { 
+    equation: "H + Cl -> HCl", 
+    name: "Xlorovodorod", 
+    type: "Sintez", 
+    desc: "Vodorod xlor bilan birikib, o'tkir hidli gaz hosil qiladi (suvda eritilsa xlorid kislota bo'ladi)." 
+  },
+  { 
+    equation: "Fe + O -> Fe₂O₃", 
+    name: "Zang (Temir oksidi)", 
+    type: "Korroziya", 
+    desc: "Temir havodagi kislorod va namlik ta'sirida asta-sekin yemirilib, qizil-qo'ng'ir zang hosil qiladi." 
+  },
+  { 
+    equation: "H + S -> H₂S", 
+    name: "Vodorod sulfid", 
+    type: "Sintez", 
+    desc: "Vodorod va oltingugurt birikib, sassiq tuxum hidini beruvchi gaz hosil qiladi." 
+  },
+  { 
+    equation: "S + O -> SO₂", 
+    name: "Oltingugurt dioksid", 
+    type: "Yonish", 
+    desc: "Oltingugurt havo rang alanga bilan yonib, o'tkir hidli va bo'g'uvchi gaz chiqaradi." 
+  },
+  { 
+    equation: "C + H -> C₂H₂", 
+    name: "Asetilen", 
+    type: "Org. Sintez", 
+    desc: "Metallarni payvandlash va kesishda ishlatiladigan, juda yuqori haroratda yonuvchi gaz." 
+  }
 ];
 
 const ChemistryLab: React.FC = () => {
@@ -69,7 +93,7 @@ const ChemistryLab: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [viewingElement, setViewingElement] = useState<ElementData | null>(null);
   
-  // YANGI STATE: Qo'llanma oynasi uchun
+  // Jadval oynasi uchun state
   const [showReference, setShowReference] = useState(false);
 
   // Qidiruv bo'yicha filtrlash
@@ -80,7 +104,7 @@ const ChemistryLab: React.FC = () => {
     );
   }, [searchTerm]);
 
-  // Elementni tanlash yoki o'chirish
+  // Elementni tanlash
   const toggleElement = (element: ElementData) => {
     if (isAnalyzing) return;
     const exists = selectedElements.find(e => e.symbol === element.symbol);
@@ -126,11 +150,10 @@ const ChemistryLab: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-40">
       
-      {/* --- HEADER (Yuqori qism) --- */}
+      {/* --- HEADER --- */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm transition-all">
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
           
-          {/* Chap tomon */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => navigate(-1)} 
@@ -146,11 +169,10 @@ const ChemistryLab: React.FC = () => {
             </div>
           </div>
 
-          {/* O'ng tomon: Jadval tugmasi */}
           <button 
             onClick={() => setShowReference(true)}
             className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 active:scale-95 transition-all"
-            title="Reaksiyalar jadvali"
+            title="Mavjud reaksiyalar"
           >
             <ClipboardList className="w-5 h-5" />
           </button>
@@ -160,7 +182,7 @@ const ChemistryLab: React.FC = () => {
 
       <main className="max-w-md mx-auto px-4 pt-4 flex flex-col gap-6">
         
-        {/* QIDIRUV PANELI */}
+        {/* QIDIRUV */}
         <div className="sticky top-14 z-30 bg-slate-50 pb-2 pt-1 -mx-1 px-1">
           <div className="flex items-center gap-2 bg-white p-3 rounded-xl border border-slate-200 shadow-sm ring-1 ring-slate-100 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
             <Search className="w-5 h-5 text-slate-400" />
@@ -174,7 +196,7 @@ const ChemistryLab: React.FC = () => {
           </div>
         </div>
 
-        {/* ELEMENTLAR RO'YXATI */}
+        {/* ELEMENTLAR GRID */}
         {filteredElements.length > 0 ? (
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-5">
             {filteredElements.map((element) => (
@@ -196,7 +218,7 @@ const ChemistryLab: React.FC = () => {
 
         <div className="h-4"></div>
 
-        {/* REAKSIYA IDISHI */}
+        {/* IDISH (BEAKER) */}
         <div id="reaction-area" className="scroll-mt-24 transition-all duration-500">
             <Beaker 
               selectedElements={selectedElements}
@@ -207,7 +229,7 @@ const ChemistryLab: React.FC = () => {
             />
         </div>
         
-        {/* NATIJA KARTASI */}
+        {/* NATIJA */}
         {result && (
           <div className="animate-slideUp mb-8">
              <ReactionResultCard 
@@ -219,7 +241,7 @@ const ChemistryLab: React.FC = () => {
 
       </main>
 
-      {/* ELEMENT BATAFSIL MA'LUMOTI MODAL */}
+      {/* ELEMENT DETAIL MODAL */}
       {viewingElement && (
         <ElementDetailModal 
           element={viewingElement} 
@@ -228,30 +250,26 @@ const ChemistryLab: React.FC = () => {
         />
       )}
 
-      {/* --- 2. JADVAL MODALI (TELEFON UCHUN PASTDAN CHIQADIGAN) --- */}
+      {/* --- REAKSIYALAR JADVALI (BOTTOM SHEET) --- */}
       {showReference && (
         <>
-          {/* Orqa fon (Qoraytirish) */}
           <div 
             className="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={() => setShowReference(false)}
           />
 
-          {/* Pastdan chiquvchi oyna (Bottom Sheet) */}
           <div className="fixed bottom-0 left-0 right-0 z-[70] flex flex-col w-full max-w-md mx-auto bg-white h-[85vh] rounded-t-3xl shadow-2xl transform transition-transform duration-300 ease-out animate-slideUp">
             
-            {/* Tutqich (Vizual) */}
             <div className="flex justify-center pt-3 pb-1 cursor-pointer" onClick={() => setShowReference(false)}>
               <div className="w-12 h-1.5 bg-slate-300 rounded-full"></div>
             </div>
 
-            {/* Modal Bosh qismi */}
             <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="bg-indigo-100 p-1.5 rounded-lg">
                   <ClipboardList className="w-5 h-5 text-indigo-600" />
                 </div>
-                <h2 className="text-lg font-bold text-slate-800">Reaksiyalar Jadvali</h2>
+                <h2 className="text-lg font-bold text-slate-800">Mavjud Reaksiyalar</h2>
               </div>
               <button 
                 onClick={() => setShowReference(false)}
@@ -261,12 +279,13 @@ const ChemistryLab: React.FC = () => {
               </button>
             </div>
 
-            {/* Scroll qismi */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/50 pb-20">
+              <div className="bg-blue-50 text-blue-700 p-3 rounded-xl text-sm mb-2 border border-blue-100">
+                 ℹ️ Bu ro'yxatda ilovada 3D modeli mavjud bo'lgan asosiy reaksiyalar keltirilgan.
+              </div>
+              
               {REACTION_REFERENCE.map((item, idx) => (
                 <div key={idx} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
-                  
-                  {/* Formula va Tip */}
                   <div className="flex justify-between items-start mb-3">
                     <span className="font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg text-sm border border-indigo-100">
                       {item.equation.split('->')[0]} 
@@ -276,29 +295,24 @@ const ChemistryLab: React.FC = () => {
                     </span>
                   </div>
                   
-                  {/* Natija */}
                   <div className="flex items-center gap-3 mb-3 pl-1">
                     <span className="text-slate-300 text-lg">➔</span>
                     <div>
                       <span className="font-bold text-slate-800 text-lg block leading-tight">
                         {item.equation.split('->')[1] || "..."}
                       </span>
-                      {item.name !== "-" && (
-                        <span className="text-sm text-slate-500 font-medium">
-                          {item.name}
-                        </span>
-                      )}
+                      <span className="text-sm text-slate-500 font-medium">
+                        {item.name}
+                      </span>
                     </div>
                   </div>
                   
-                  {/* Tavsif */}
                   <div className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
                     {item.desc}
                   </div>
                 </div>
               ))}
               
-              {/* Pastki qismda xavfsiz joy */}
               <div className="h-8"></div>
             </div>
           </div>

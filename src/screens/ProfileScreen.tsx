@@ -200,7 +200,7 @@ const ProfileScreen = ({ user }: { user: User }) => {
                             </button>
 
                             <div className="text-center pb-2">
-                                <p className="text-[10px] text-gray-300">Atomix Academy v1.0.5</p>
+                                <p className="text-[10px] text-gray-300">KLab versiya 2.0</p>
                             </div>
                         </div>
                     )}

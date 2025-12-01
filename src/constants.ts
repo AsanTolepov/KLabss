@@ -135,73 +135,36 @@ export const COLORS = {
   white: '#FFFFFF'
 };
 
-// 2. YUTUQLAR RO'YXATI (Yangilandi)
 export const ACHIEVEMENTS_LIST = [
-  { 
-    id: 'first_discovery', 
-    title: 'Birinchi qadam',  // Rasmga moslandi
-    description: 'Ilk bor laboratoriya topshirig\'ini bajardingiz!', 
-    icon: '🚀' 
-  },
-  { 
-    id: 'quiz_master', 
-    title: 'Zukko',  // Rasmga moslandi
-    description: 'Topshiriqda 100% natija ko\'rsatdingiz.', 
-    icon: '🎯' 
-  },
-  { 
-    id: 'streak_3', 
-    title: 'Barqaror', 
-    description: '3 kun ketma-ket mashg\'ulot qildingiz.', 
-    icon: '🔥' 
-  },
-  { 
-    id: 'science_nerd', 
-    title: 'Fanat', 
-    description: 'Bitta fandan barcha darslarni ko\'rib chiqdingiz.', 
-    icon: '🤓' 
-  },
-  { 
-    id: 'speed_runner', 
-    title: 'Tezkor', 
-    description: 'Topshiriqni 1 daqiqadan kam vaqtda bajardingiz.', 
-    icon: '⚡' 
-  },
-  { 
-    id: 'level_5', 
-    title: 'Professional', 
-    description: '5-darajaga (Level 5) yetdingiz.', 
-    icon: '🏆' 
-  }
+  // Bu yerni ham vaqtincha qoldiramiz, asosiysi Course va Lessons
 ];
-// VIDEO LINKLAR (15 soniyalik tezkor videolar)
+
+// VIDEO LINKLAR
 const VID_1 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 const VID_2 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4";
 const VID_3 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4";
 const VID_4 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4";
 const VID_5 = "https://storage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4";
 
-
-
-// 3. KURSLAR VA DARSLAR RO'YXATI
+// 3. KURSLAR VA DARSLAR RO'YXATI (TARJIMA KALITLARI BILAN)
 export const COURSES: Course[] = [
   {
     id: SubjectType.CHEMISTRY,
-    title: 'Kimyo',
-    description: 'Moddalar, elementlar va reaksiyalar.',
+    title: 'chemistry', // Kalit so'z
+    description: 'chemistry_desc', // Kalit so'z
     color: COLORS.primary,
     icon: 'Atom',
     lessons: [
       {
         id: 'chem-1',
-        title: '1. Kislota va Asoslar',
-        description: 'pH balansi va neytrallash jarayoni.',
-        videoUrl: VID_1, // 15 sek
+        title: 'chem_1_title', // Kalit
+        description: 'chem_1_desc', // Kalit
+        videoUrl: VID_1,
         thumbnail: 'https://picsum.photos/400/225?random=1',
-        duration: '15 soniya',
+        duration: '15', // Faqat raqamni qoldiramiz, "soniya"ni translate qilamiz
         taskConfig: {
           type: SubjectType.CHEMISTRY,
-          instructions: 'Eritmani neytrallang! Kislotaga asos qo\'shib, pH darajasini 7.0 ga keltiring.',
+          instructions: 'chem_1_task', // Kalit
           targetValue: 7.0,
           tolerance: 0.5,
           initialParams: { ph: 2.0, volume: 50 },
@@ -209,14 +172,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'chem-2',
-        title: '2. Kovalent Bog\'lanish',
-        description: 'Atomlar elektronlarni qanday bo\'lishadi?',
-        videoUrl: VID_2, // 15 sek
+        title: 'chem_2_title',
+        description: 'chem_2_desc',
+        videoUrl: VID_2,
         thumbnail: 'https://picsum.photos/400/225?random=2',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.CHEMISTRY,
-          instructions: 'Barqaror molekula hosil qilish uchun elektronlar sonini to\'g\'rilang (Oktet qoidasi).',
+          instructions: 'chem_2_task',
           targetValue: 8,
           tolerance: 0,
           initialParams: { electrons: 4, volume: 0 },
@@ -224,14 +187,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'chem-3',
-        title: '3. Davriy Jadval',
-        description: 'Elementlarning xossalari va joylashuvi.',
-        videoUrl: VID_3, // 15 sek
+        title: 'chem_3_title',
+        description: 'chem_3_desc',
+        videoUrl: VID_3,
         thumbnail: 'https://picsum.photos/400/225?random=3',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.CHEMISTRY,
-          instructions: 'Ideal gaz holati uchun temperaturani Selsiyda sozlang (25°C xona harorati).',
+          instructions: 'chem_3_task',
           targetValue: 25,
           tolerance: 2,
           initialParams: { temp: 0, pressure: 1 },
@@ -239,14 +202,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'chem-4',
-        title: '4. Kimyoviy Reaksiyalar',
-        description: 'Ekzotermik va endotermik jarayonlar.',
-        videoUrl: VID_4, // 15 sek
+        title: 'chem_4_title',
+        description: 'chem_4_desc',
+        videoUrl: VID_4,
         thumbnail: 'https://picsum.photos/400/225?random=4',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.CHEMISTRY,
-          instructions: 'Reaksiya tezligini oshirish uchun katalizator miqdorini 50mg ga yetkazing.',
+          instructions: 'chem_4_task',
           targetValue: 50,
           tolerance: 5,
           initialParams: { catalyst: 10, heat: 30 },
@@ -254,14 +217,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'chem-5',
-        title: '5. Eritmalar',
-        description: 'Konsentratsiya va to\'yinish.',
-        videoUrl: VID_5, // Qisqa
+        title: 'chem_5_title',
+        description: 'chem_5_desc',
+        videoUrl: VID_5,
         thumbnail: 'https://picsum.photos/400/225?random=5',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.CHEMISTRY,
-          instructions: 'Eritma konsentratsiyasini 10% ga tushirish uchun suv qo\'shing.',
+          instructions: 'chem_5_task',
           targetValue: 10,
           tolerance: 1,
           initialParams: { concentration: 50, water: 0 },
@@ -271,21 +234,21 @@ export const COURSES: Course[] = [
   },
   {
     id: SubjectType.PHYSICS,
-    title: 'Fizika',
-    description: 'Kuch, energiya va harakat qonunlari.',
+    title: 'physics',
+    description: 'physics_desc',
     color: COLORS.accent,
     icon: 'Zap',
     lessons: [
       {
         id: 'phys-1',
-        title: '1. Om Qonuni',
-        description: 'Kuchlanish, Tok va Qarshilik.',
+        title: 'phys_1_title',
+        description: 'phys_1_desc',
         videoUrl: VID_2,
         thumbnail: 'https://picsum.photos/400/225?random=6',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.PHYSICS,
-          instructions: 'Tok kuchi (I) roppa-rosa 2.0 Amper bo\'lishi uchun Kuchlanishni (V) sozlang (R=5 Om).',
+          instructions: 'phys_1_task',
           targetValue: 2.0,
           tolerance: 0.1,
           initialParams: { voltage: 5, resistance: 5 },
@@ -293,14 +256,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'phys-2',
-        title: '2. Nyuton Qonunlari',
-        description: 'Kuch va harakat.',
+        title: 'phys_2_title',
+        description: 'phys_2_desc',
         videoUrl: VID_3,
         thumbnail: 'https://picsum.photos/400/225?random=7',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.PHYSICS,
-          instructions: 'Jism tezlanishi 5 m/s² bo\'lishi uchun unga ta\'sir qiluvchi kuchni toping (m=10kg).',
+          instructions: 'phys_2_task',
           targetValue: 50,
           tolerance: 2,
           initialParams: { force: 0, mass: 10 },
@@ -308,14 +271,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'phys-3',
-        title: '3. Gravitatsiya',
-        description: 'Erkin tushish tezlanishi.',
+        title: 'phys_3_title',
+        description: 'phys_3_desc',
         videoUrl: VID_4,
         thumbnail: 'https://picsum.photos/400/225?random=8',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.PHYSICS,
-          instructions: 'Raketa uchishi uchun tortish kuchini (G) yengib o\'tadigan kuchlanishni 100% ga yetkazing.',
+          instructions: 'phys_3_task',
           targetValue: 100,
           tolerance: 1,
           initialParams: { thrust: 0, gravity: 9.8 },
@@ -323,14 +286,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'phys-4',
-        title: '4. Optika',
-        description: 'Yorug\'likning sinishi va qaytishi.',
+        title: 'phys_4_title',
+        description: 'phys_4_desc',
         videoUrl: VID_1,
         thumbnail: 'https://picsum.photos/400/225?random=9',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.PHYSICS,
-          instructions: 'Yorug\'likni to\'liq qaytarish uchun tushish burchagini 45 gradusga sozlang.',
+          instructions: 'phys_4_task',
           targetValue: 45,
           tolerance: 2,
           initialParams: { angle: 0, refraction: 1.5 },
@@ -338,14 +301,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'phys-5',
-        title: '5. Termodinamika',
-        description: 'Issiqlik uzatish usullari.',
+        title: 'phys_5_title',
+        description: 'phys_5_desc',
         videoUrl: VID_5,
         thumbnail: 'https://picsum.photos/400/225?random=10',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.PHYSICS,
-          instructions: 'Tizim muvozanatga kelishi uchun temperaturani 50°C ga tushiring.',
+          instructions: 'phys_5_task',
           targetValue: 50,
           tolerance: 5,
           initialParams: { temp: 100, energy: 500 },
@@ -355,21 +318,21 @@ export const COURSES: Course[] = [
   },
   {
     id: SubjectType.BIOLOGY,
-    title: 'Biologiya',
-    description: 'Hayot, hujayralar va ekotizim.',
+    title: 'biology',
+    description: 'biology_desc',
     color: COLORS.secondary,
     icon: 'Sprout',
     lessons: [
       {
         id: 'bio-1',
-        title: '1. Fotosintez',
-        description: 'Yorug\'lik energiyasi va o\'simliklar.',
+        title: 'bio_1_title',
+        description: 'bio_1_desc',
         videoUrl: VID_3,
         thumbnail: 'https://picsum.photos/400/225?random=11',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.BIOLOGY,
-          instructions: 'O\'simlik o\'sishi 100% bo\'lishi uchun Yorug\'lik va CO2 miqdorini optimallashtiring.',
+          instructions: 'bio_1_task',
           targetValue: 100,
           tolerance: 5,
           initialParams: { light: 20, co2: 20 },
@@ -377,14 +340,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'bio-2',
-        title: '2. Hujayra Tuzilishi',
-        description: 'Membrana, yadro va mitoxondriya.',
+        title: 'bio_2_title',
+        description: 'bio_2_desc',
         videoUrl: VID_1,
         thumbnail: 'https://picsum.photos/400/225?random=12',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.BIOLOGY,
-          instructions: 'Hujayra energiyasini (ATP) oshirish uchun mitoxondriya faolligini 80% ga ko\'taring.',
+          instructions: 'bio_2_task',
           targetValue: 80,
           tolerance: 5,
           initialParams: { activity: 20, glucose: 50 },
@@ -392,14 +355,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'bio-3',
-        title: '3. DNK va Genetika',
-        description: 'Irsiyat qonunlari.',
+        title: 'bio_3_title',
+        description: 'bio_3_desc',
         videoUrl: VID_4,
         thumbnail: 'https://picsum.photos/400/225?random=13',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.BIOLOGY,
-          instructions: 'DNK zanjirini barqarorlashtirish uchun haroratni 37°C (tana harorati) ga sozlang.',
+          instructions: 'bio_3_task',
           targetValue: 37,
           tolerance: 0.5,
           initialParams: { temp: 20, stability: 0 },
@@ -407,14 +370,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'bio-4',
-        title: '4. Ekotizimlar',
-        description: 'Oziq zanjiri va muvozanat.',
+        title: 'bio_4_title',
+        description: 'bio_4_desc',
         videoUrl: VID_2,
         thumbnail: 'https://picsum.photos/400/225?random=14',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.BIOLOGY,
-          instructions: 'Ekotizim balansi uchun yirtqichlar va o\'lja nisbatini 1:10 ga keltiring (10 yirtqich).',
+          instructions: 'bio_4_task',
           targetValue: 10,
           tolerance: 1,
           initialParams: { predators: 2, prey: 100 },
@@ -422,14 +385,14 @@ export const COURSES: Course[] = [
       },
       {
         id: 'bio-5',
-        title: '5. Inson Anatomiyasi',
-        description: 'Yurak va qon aylanish tizimi.',
+        title: 'bio_5_title',
+        description: 'bio_5_desc',
         videoUrl: VID_5,
         thumbnail: 'https://picsum.photos/400/225?random=15',
-        duration: '15 soniya',
+        duration: '15',
         taskConfig: {
           type: SubjectType.BIOLOGY,
-          instructions: 'Yurak urish tezligini (Puls) normal holatga, ya\'ni 70 zarba/daqiqaga tushiring.',
+          instructions: 'bio_5_task',
           targetValue: 70,
           tolerance: 5,
           initialParams: { bpm: 120, adrenaline: 50 },

@@ -2,23 +2,23 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Atom, Zap, Sprout, ChevronLeft, PlayCircle } from 'lucide-react';
 import { COURSES } from '../constants';
+import { useTranslation } from 'react-i18next'; // IMPORT
 
 const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation(); // HOOK
   
-  // Kursni topamiz (katta-kichik harflarni inobatga olmaymiz)
   const course = COURSES.find(c => c.id.toLowerCase() === id?.toLowerCase());
 
-  // XATOLIKNI OLDINI OLISH: Agar kurs topilmasa
   if (!course) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-slate-50">
         <div className="text-6xl mb-4">😕</div>
-        <h2 className="text-2xl font-bold text-gray-800">Kurs topilmadi</h2>
-        <p className="text-gray-500 mb-6">Balki havola noto'g'ridir?</p>
+        <h2 className="text-2xl font-bold text-gray-800">{t('course_not_found')}</h2>
+        <p className="text-gray-500 mb-6">{t('maybe_wrong_link')}</p>
         <button onClick={() => navigate('/app')} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">
-          Bosh sahifaga qaytish
+          {t('back_to_home')}
         </button>
       </div>
     );
@@ -40,13 +40,14 @@ const CourseDetails = () => {
             <div className="w-20 h-20 rounded-3xl flex items-center justify-center mb-4 shadow-lg" style={{ backgroundColor: course.color }}>
               <Icon className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{course.title}</h1>
-            <p className="text-gray-500 max-w-xs">{course.description}</p>
+            {/* TARJIMA */}
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t(course.title)}</h1>
+            <p className="text-gray-500 max-w-xs">{t(course.description)}</p>
         </div>
       </div>
 
       <div className="px-6 space-y-4">
-      <h3 className="font-bold text-gray-800 text-lg">Darslar rejasi</h3>
+      <h3 className="font-bold text-gray-800 text-lg">{t('lesson_plan')}</h3>
         {course.lessons.map((lesson) => (
           <div 
             key={lesson.id} 
@@ -60,9 +61,10 @@ const CourseDetails = () => {
               </div>
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-gray-800 line-clamp-1">{lesson.title}</h4>
+              {/* TARJIMA */}
+              <h4 className="font-bold text-gray-800 line-clamp-1">{t(lesson.title)}</h4>
               <p className="text-xs text-gray-400 mt-1 flex items-center">
-                ⏱ {lesson.duration}
+                ⏱ {lesson.duration} {t('seconds')}
               </p>
             </div>
             <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center">

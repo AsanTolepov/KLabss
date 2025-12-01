@@ -2,15 +2,17 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, PlayCircle, Lock, CheckCircle } from 'lucide-react';
 import { COURSES } from '../constants';
+import { useTranslation } from 'react-i18next'; // IMPORT
 
 const GradeLessonsScreen = ({ userProgress }: { userProgress: any }) => {
   const { subjectId, gradeId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation(); // HOOK
   
   const course = COURSES.find(c => c.id === subjectId);
-  const gradeLevel = course?.grades.find(g => g.grade === Number(gradeId));
+  const gradeLevel = course?.grades?.find(g => g.grade === Number(gradeId));
 
-  if (!gradeLevel) return <div>Sinf topilmadi</div>;
+  if (!gradeLevel) return <div>{t('grade_not_found')}</div>;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
@@ -24,7 +26,6 @@ const GradeLessonsScreen = ({ userProgress }: { userProgress: any }) => {
 
       <div className="p-4 space-y-4">
         {gradeLevel.lessons.map((lesson, index) => {
-            // Oldingi dars bajarilganmi? (Progressiv ochilish uchun ixtiyoriy)
             const progress = userProgress[lesson.id] || {};
             const isCompleted = progress.taskCompleted;
             
@@ -48,15 +49,16 @@ const GradeLessonsScreen = ({ userProgress }: { userProgress: any }) => {
 
                 {/* Info */}
                 <div className="flex-1 flex flex-col justify-center">
-                  <h4 className="font-bold text-gray-800 line-clamp-2 mb-1">{index + 1}. {lesson.title}</h4>
-                  <p className="text-xs text-gray-500 line-clamp-2">{lesson.description}</p>
+                  {/* TARJIMA */}
+                  <h4 className="font-bold text-gray-800 line-clamp-2 mb-1">{index + 1}. {t(lesson.title)}</h4>
+                  <p className="text-xs text-gray-500 line-clamp-2">{t(lesson.description)}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-md">
-                        ⏱ {lesson.duration}
+                        ⏱ {lesson.duration} {t('seconds')}
                     </span>
                     {progress.score > 0 && (
                         <span className="text-[10px] font-bold bg-yellow-50 text-yellow-600 px-2 py-1 rounded-md">
-                            ⭐ {progress.score} ball
+                            ⭐ {progress.score} {t('points')}
                         </span>
                     )}
                   </div>
